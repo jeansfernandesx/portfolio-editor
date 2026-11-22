@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Clapperboard, Palette, Music, Layers, CircleDot, SquarePen, Check, Award, Target, Sparkles } from "lucide-react";
+import { Clapperboard, Palette, Music, Layers, CircleDot, SquarePen, Award, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { profile } from "@/data/profile";
@@ -15,7 +15,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   CircleDot,
   SquarePen,
   Award,
-  Target,
   Sparkles,
 };
 
@@ -26,22 +25,17 @@ export function About() {
       <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="absolute left-0 right-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" aria-hidden="true" />
 
-      {/* Vertical accent line */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent pointer-events-none" style={{ transform: "translateX(-50%)" }} aria-hidden="true" />
-
       <Container size="xl" className="relative">
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-start">
-
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           {/* Left Column - Image + Quote Card */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="lg:col-span-6 lg:col-start-1 relative"
           >
             {/* Main Image */}
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-900">
+            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-900 mb-8">
               <Image
                 src={profile.avatar}
                 alt={profile.name}
@@ -56,16 +50,16 @@ export function About() {
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute bottom-6 left-6 right-6 lg:bottom-8 lg:left-8 lg:right-8"
+                className="absolute bottom-6 left-6 right-6"
               >
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 lg:p-8">
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
                   <div className="flex items-center gap-4">
                     <div className="p-3 bg-amber-500/20 rounded-xl">
                       <Award className="h-6 w-6 text-amber-400" aria-hidden="true" />
                     </div>
                     <div>
                       <p className="text-white/40 text-xs uppercase tracking-widest font-medium">Reconhecimento</p>
-                      <p className="text-white font-semibold text-lg">Top Rated Editor</p>
+                      <p className="text-white font-semibold">Top Rated Editor</p>
                       <p className="text-gray-400 text-sm mt-1">Behance / Vimeo Staff Pick</p>
                     </div>
                   </div>
@@ -73,13 +67,12 @@ export function About() {
               </motion.div>
             </div>
 
-            {/* Quote Card - offset */}
+            {/* Quote Card */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="absolute -bottom-10 -left-10 lg:-bottom-12 lg:-left-12 w-full max-w-md lg:max-w-lg z-10"
             >
               <div className="bg-gray-950/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 lg:p-8 shadow-[0_0_0_1px_rgba(255,255,255,0.05),_0_25px_50px_-12px_rgba(0,0,0,0.8)]">
                 <div className="flex items-start gap-4">
@@ -104,11 +97,11 @@ export function About() {
 
           {/* Right Column - Content */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="lg:col-span-5 lg:col-start-7 pt-12 lg:pt-20"
+            className="pt-12 lg:pt-0"
           >
             {/* Header */}
             <div className="mb-12">
@@ -156,7 +149,7 @@ export function About() {
               </span>
             </motion.div>
 
-            {/* Specialties Grid - Editorial Style */}
+            {/* Specialties Grid */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -187,18 +180,8 @@ export function About() {
                         </motion.div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-white group-hover:text-white/80 transition-colors">{specialty.name}</p>
-                          <p className="text-gray-500 text-sm mt-0.5 line-clamp-1">{profile.tagline}</p>
                         </div>
-                        <motion.div
-                          initial={{ opacity: 0, x: 10 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <Check className="h-5 w-5 text-green-400" aria-hidden="true" />
-                        </motion.div>
                       </div>
-                      {/* Accent line */}
                       <div className="absolute left-0 bottom-0 h-px bg-gradient-to-r from-amber-500 to-transparent w-0 group-hover:w-full transition-all duration-500" aria-hidden="true" />
                     </motion.div>
                   );
@@ -212,23 +195,18 @@ export function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 pt-8 border-t border-white/10"
+              className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 pt-8 border-t border-white/10 mb-12"
             >
               {[
-                { value: "5+", label: "Anos de Experiência", suffix: "" },
-                { value: "120+", label: "Projetos Entregues", suffix: "" },
-                { value: "40+", label: "Clientes Atendidos", suffix: "" },
-                { value: "98%", label: "Taxa de Satisfação", suffix: "" },
+                { value: "5+", label: "Anos de Experiência" },
+                { value: "120+", label: "Projetos Entregues" },
+                { value: "40+", label: "Clientes Atendidos" },
+                { value: "98%", label: "Taxa de Satisfação" },
               ].map((stat, i) => (
                 <div key={stat.label} className="relative">
-                  <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-none tracking-tighter">
-                    {stat.value}
-                    <span className="text-2xl sm:text-3xl lg:text-4xl font-light text-white/40">{stat.suffix}</span>
-                  </div>
+                  <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-none tracking-tighter">{stat.value}</div>
                   <p className="text-white/40 text-xs uppercase tracking-wider mt-2 font-medium">{stat.label}</p>
-                  {i < 3 && (
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-1/2 bg-gradient-to-b from-transparent via-white/10 to-transparent" aria-hidden="true" />
-                  )}
+                  {i < 3 && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-1/2 bg-gradient-to-b from-transparent via-white/10 to-transparent" aria-hidden="true" />}
                 </div>
               ))}
             </motion.div>
@@ -239,7 +217,7 @@ export function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="mt-12 pt-8 border-t border-white/10"
+              className="pt-8 border-t border-white/10"
             >
               <p className="text-white/40 text-xs uppercase tracking-widest font-medium mb-6">Ferramentas & Workflow</p>
               <div className="flex flex-wrap gap-2">

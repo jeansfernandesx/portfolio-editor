@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Play, X, ExternalLink, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play, X, ExternalLink, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -14,38 +14,24 @@ interface ProjectCardProps {
   project: (typeof projects)[0];
   index: number;
   onOpen: (project: typeof projects[0]) => void;
-  layout?: "featured" | "default" | "horizontal";
 }
 
-function ProjectCard({ project, index, onOpen, layout = "default" }: ProjectCardProps) {
+function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
   const [loaded, setLoaded] = useState(false);
-  const [hovered, setHovered] = useState(false);
-
-  const aspectRatios = {
-    featured: "aspect-[16/9]",
-    default: "aspect-[4/3]",
-    horizontal: "aspect-[21/9]",
-  };
 
   return (
     <motion.article
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className={cn(
-        "group relative cursor-pointer",
-        layout === "featured" && "lg:col-span-2 lg:row-span-2",
-        layout === "horizontal" && "lg:col-span-3"
-      )}
+      className="group relative cursor-pointer"
       onKeyDown={(e) => e.key === "Enter" && onOpen(project)}
       onClick={() => onOpen(project)}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       tabIndex={0}
       role="button"
       aria-label={`Ver projeto: ${project.title}`}
     >
-      <div className={cn("relative overflow-hidden rounded-2xl bg-gray-900", aspectRatios[layout])}>
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-900">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" aria-hidden="true" />
 
         {!loaded && (
@@ -64,11 +50,7 @@ function ProjectCard({ project, index, onOpen, layout = "default" }: ProjectCard
             loaded ? "opacity-100" : "opacity-0"
           )}
           onLoad={() => setLoaded(true)}
-          sizes={layout === "featured"
-            ? "(max-width: 1024px) 100vw, 66vw"
-            : layout === "horizontal"
-              ? "(max-width: 1024px) 100vw, 75vw"
-              : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
           placeholder="blur"
           blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
         />
@@ -118,7 +100,7 @@ function ProjectCard({ project, index, onOpen, layout = "default" }: ProjectCard
       </div>
 
       {/* Content */}
-      <div className="mt-5 group-hover:pr-4 transition-pr duration-300">
+      <div className="mt-5">
         <motion.div
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
@@ -126,7 +108,7 @@ function ProjectCard({ project, index, onOpen, layout = "default" }: ProjectCard
           className="space-y-2"
         >
           <p className="text-white/40 text-xs uppercase tracking-widest font-medium">{project.category}</p>
-          <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-white/80 transition-colors leading-tight pr-8">
+          <h3 className="text-xl font-bold text-white group-hover:text-white/80 transition-colors leading-tight pr-8">
             {project.title}
           </h3>
           <p className="text-gray-400 text-sm leading-relaxed line-clamp-2 max-w-xs sm:max-w-md">
@@ -267,35 +249,11 @@ function ProjectModal({ project, onClose }: { project: (typeof projects)[0]; onC
 export function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<Category>("Todos");
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
-  const [viewMode, setViewMode] = useState<"grid" | "masonry">("grid");
 
   const filteredProjects = useMemo(() => {
     if (activeCategory === "Todos") return projects;
     return projects.filter((p) => p.category === activeCategory);
   }, [activeCategory]);
-
-  // Layout logic: first project featured, rest in grid
-  const layoutProjects = useMemo(() => {
-    if (filteredProjects.length === 0) return [];
-
-    const featured = filteredProjects.find(p => p.featured);
-    const others = filteredProjects.filter(p => !p.featured);
-
-    if (featured) {
-      return [
-        { ...featured, _layout: "featured" as const },
-        ...others.map((p, i) => ({
-          ...p,
-          _layout: i % 3 === 2 ? "horizontal" as const : "default" as const
-        }))
-      ];
-    }
-
-    return others.map((p, i) => ({
-      ...p,
-      _layout: i % 3 === 2 ? "horizontal" as const : "default" as const
-    }));
-  }, [filteredProjects]);
 
   const handleOpenModal = (project: typeof projects[0]) => {
     setSelectedProject(project);
@@ -331,7 +289,7 @@ export function Portfolio() {
             </div>
             <div className="flex items-center gap-3">
               <span className="text-white/30 text-sm hidden sm:block">Filtrar por:</span>
-              <div className="flex gap-2" role="tablist" aria-label="Filtrar por categoria">
+              <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filtrar por categoria">
                 {categories.map((category) => (
                   <button
                     key={category}
@@ -352,49 +310,21 @@ export function Portfolio() {
               </div>
             </div>
           </div>
-
-          {/* View Toggle */}
-          <div className="flex items-center gap-2 bg-gray-900/50 border border-white/10 rounded-full p-1 w-fit">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={cn(
-                "p-2 rounded-full transition-all",
-                viewMode === "grid" ? "bg-white text-black" : "text-gray-400 hover:text-white"
-              )}
-              aria-label="Visualização em grade"
-              aria-pressed={viewMode === "grid"}
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-            </button>
-            <button
-              onClick={() => setViewMode("masonry")}
-              className={cn(
-                "p-2 rounded-full transition-all",
-                viewMode === "masonry" ? "bg-white text-black" : "text-gray-400 hover:text-white"
-              )}
-              aria-label="Visualização masonry"
-              aria-pressed={viewMode === "masonry"}
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4a2 2 0 012-2h12a2 2 0 012 2v4M4 16v4a2 2 0 002 2h12a2 2 0 002-2v-4M4 12v-4a2 2 0 012-2h4" /></svg>
-            </button>
-          </div>
         </motion.div>
 
-        {/* Projects Grid */}
+        {/* Projects Grid - Simple Responsive Grid */}
         <motion.div
           id="portfolio-grid"
           role="tabpanel"
           aria-label={`${activeCategory} projetos`}
-          className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8"
-          style={{ gridAutoRows: "minmax(300px, auto)" }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
         >
-          {layoutProjects.map(({ _layout, ...project }, index) => (
+          {filteredProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
               project={project}
               index={index}
               onOpen={handleOpenModal}
-              layout={_layout}
             />
           ))}
         </motion.div>

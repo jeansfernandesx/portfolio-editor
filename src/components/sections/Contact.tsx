@@ -86,22 +86,15 @@ export function Contact() {
       <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="absolute left-0 right-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" aria-hidden="true" />
 
-      {/* Background pattern */}
-      <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true">
-        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" style={{ transform: "translateX(-50%)" }} />
-        <div className="absolute left-0 right-0 top-1/2 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-      </div>
-
       <Container size="xl" className="relative">
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-16">
-
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Left Column - Direct Contact Cards */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="lg:col-span-5 lg:col-start-1 pt-12"
+            className="pt-12 lg:pt-0"
           >
             <div className="space-y-6">
               <div>
@@ -174,7 +167,6 @@ export function Contact() {
                         <ArrowRight className="h-5 w-5" />
                       </motion.div>
                     </a>
-                    {/* Accent line */}
                     <div className="absolute left-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-0 group-hover:w-full transition-all duration-500" aria-hidden="true" />
                   </motion.article>
                 ))}
@@ -225,7 +217,7 @@ export function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="lg:col-span-6 lg:col-start-7"
+            className="pt-12 lg:pt-0"
           >
             <div className="bg-gray-950/50 border border-white/10 rounded-2xl p-6 lg:p-8 h-full">
               <div className="mb-8">

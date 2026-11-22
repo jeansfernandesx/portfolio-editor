@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Clapperboard, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-end overflow-hidden" aria-labelledby="hero-title" style={{ minHeight: "100vh" }}>
+    <section className="relative min-h-screen flex items-center overflow-hidden" aria-labelledby="hero-title" style={{ minHeight: "100vh" }}>
       {/* Background Video Layer */}
       <div className="absolute inset-0 -z-10" aria-hidden="true">
         <video
@@ -43,18 +43,17 @@ export function Hero() {
       {/* Foreground Accent Lines */}
       <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true">
         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" style={{ transform: "translateX(-50%)" }} />
-        <div className="absolute left-0 right-0 top-1/3 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-        <div className="absolute left-0 right-0 top-2/3 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+        <div className="absolute left-0 right-0 top-1/2 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
       </div>
 
-      <Container size="xl" className="relative z-10 pb-20 pt-32 w-full">
-        <div className="grid lg:grid-cols-12 gap-8 items-end">
-          {/* Left Column - Editorial Info */}
+      <Container size="xl" className="relative z-10 py-20 w-full">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left Column - Editorial Content */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="lg:col-span-5 lg:col-start-1 self-start pt-16"
+            className="pt-12 lg:pt-0"
           >
             <div className="flex items-center gap-3 mb-8">
               <motion.div
@@ -76,28 +75,64 @@ export function Hero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="text-6xl sm:text-7xl lg:text-8xl font-black tracking-tighter text-white leading-[0.95] mb-6"
+              className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-[0.95] mb-6"
               style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
             >
-              EDITOR<span className="text-white/40 block text-4xl sm:text-5xl lg:text-6xl font-light mt-2">DEMO</span>
+              EDITOR<span className="text-white/40 block text-3xl sm:text-4xl lg:text-5xl font-light mt-2">DEMO</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="text-base sm:text-lg text-gray-300 max-w-xs leading-relaxed font-light"
+              className="text-base sm:text-lg text-gray-300 max-w-lg leading-relaxed font-light"
             >
               {profile.tagline}
             </motion.p>
+
+            {/* Stats Bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="mt-10 grid grid-cols-3 gap-6 text-center"
+            >
+              {[
+                { label: "Anos Exp.", value: "5+" },
+                { label: "Projetos", value: "120+" },
+                { label: "Clientes", value: "40+" },
+              ].map((stat, i) => (
+                <div key={stat.label} className="relative">
+                  <div className="text-3xl sm:text-4xl font-black text-white leading-none">{stat.value}</div>
+                  <div className="text-white/40 text-xs tracking-wider uppercase mt-1">{stat.label}</div>
+                  {i < 2 && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-1/2 bg-gradient-to-b from-transparent via-white/10 to-transparent" aria-hidden="true" />}
+                </div>
+              ))}
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="mt-10 flex flex-col sm:flex-row gap-4"
+            >
+              <Button size="lg" onClick={scrollToPortfolio} className="w-full sm:w-auto bg-white text-black hover:bg-white/90">
+                Ver Projetos
+                <ChevronDown className="h-5 w-5 ml-2" aria-hidden="true" />
+              </Button>
+              <Button size="lg" variant="outline" onClick={scrollToPortfolio} className="w-full sm:w-auto border-white/20 text-white hover:bg-white/5">
+                Entrar em Contato
+              </Button>
+            </motion.div>
           </motion.div>
 
-          {/* Center - Showreel Player */}
+          {/* Right Column - Showreel Player */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.3, type: "spring", stiffness: 100, damping: 15 }}
-            className="lg:col-span-6 lg:col-start-6 relative group"
+            className="relative"
           >
             <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-950 border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.05),_0_25px_50px_-12px_rgba(0,0,0,0.8)]">
               <video
@@ -139,59 +174,24 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Stats Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="mt-8 grid grid-cols-3 gap-4 text-center"
-            >
-              {[
-                { label: "Anos Exp.", value: "5+" },
-                { label: "Projetos", value: "120+" },
-                { label: "Clientes", value: "40+" },
-              ].map((stat, i) => (
-                <div key={stat.label} className="relative">
-                  <div className="text-3xl sm:text-4xl font-black text-white leading-none">{stat.value}</div>
-                  <div className="text-white/40 text-xs tracking-wider uppercase mt-1">{stat.label}</div>
-                  {i < 2 && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-1/2 bg-gradient-to-b from-transparent via-white/10 to-transparent" aria-hidden="true" />}
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* Right Column - CTA + Scroll Indicator */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="lg:col-span-1 lg:col-start-12 self-end pb-8 flex flex-col items-end gap-6"
-          >
-            <div className="flex flex-col items-end gap-3 w-full max-w-xs">
-              <Button size="lg" onClick={scrollToPortfolio} className="w-full justify-end gap-2 bg-white text-black hover:bg-white/90 active:bg-white">
-                Ver Projetos
-                <ChevronDown className="h-5 w-5" aria-hidden="true" />
-              </Button>
-              <Button size="lg" variant="outline" onClick={scrollToPortfolio} className="w-full justify-end gap-2 border-white/20 text-white hover:bg-white/5">
-                Entrar em Contato
-              </Button>
-            </div>
-
+            {/* Scroll Indicator */}
             <AnimatePresence mode="wait">
               {showScroll && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.5 }}
-                  className="w-px h-24 bg-gradient-to-b from-white/20 to-transparent relative"
+                  transition={{ duration: 0.5, delay: 1 }}
+                  className="mt-8 flex justify-center"
                   aria-hidden="true"
                 >
-                  <motion.div
-                    animate={{ y: [0, 24, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute left-1/2 top-0 w-px h-8 -translate-x-1/2 bg-white/40"
-                  />
+                  <div className="w-px h-24 bg-gradient-to-b from-white/20 to-transparent relative">
+                    <motion.div
+                      animate={{ y: [0, 24, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      className="absolute left-1/2 top-0 w-px h-8 -translate-x-1/2 bg-white/40"
+                    />
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
