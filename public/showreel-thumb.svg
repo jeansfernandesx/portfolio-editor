@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="showreelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#showreelGrad)"/>
+  <circle cx="960" cy="540" r="80" fill="white" fill-opacity="0.1" stroke="white" stroke-opacity="0.3" stroke-width="3"/>
+  <polygon points="935,505 935,575 985,540" fill="white" fill-opacity="0.6"/>
+  <text x="960" y="680" font-family="system-ui, sans-serif" font-size="32" fill="white" text-anchor="middle" opacity="0.3">Showreel 2024</text>
+</svg>

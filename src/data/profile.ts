@@ -1,0 +1,40 @@
+export const profile = {
+  name: "EDITOR DEMO",
+  role: "Editor de Vídeos & Motion Designer",
+  tagline: "Transformo histórias brutas em narrativas visuais impactantes. Edição ágil, ritmo cinematográfico, entrega técnica.",
+  bio: "Editor de vídeos com 5+ anos de experiência em produção audiovisual para marcas, creators e agências. Especialista em storytelling visual, ritmo narrativo e pós-produção completa — do rough cut à master final. Domino fluxos de trabalho em Premiere Pro, After Effects, DaVinci Resolve e ferramentas de IA para aceleração de entregas.",
+  avatar: "/avatar.svg",
+  location: "São Paulo, BR",
+  availability: "Disponível para freelas e contratos",
+  specialties: [
+    { name: "Edição Narrativa", icon: "Clapperboard" },
+    { name: "Motion Graphics", icon: "SquarePen" },
+    { name: "Color Grading", icon: "Palette" },
+    { name: "Sound Design", icon: "Music" },
+    { name: "After Effects", icon: "Layers" },
+    { name: "DaVinci Resolve", icon: "CircleDot" },
+  ],
+  software: [
+    "Premiere Pro",
+    "After Effects",
+    "DaVinci Resolve",
+    "Photoshop",
+    "Illustrator",
+    "Audition",
+  ],
+  contacts: {
+    whatsapp: "5511999999999",
+    instagram: "@editor.demo",
+    email: "contato@editordemo.com",
+  },
+  socialLinks: {
+    whatsapp: "https://wa.me/5511999999999",
+    instagram: "https://instagram.com/editor.demo",
+    email: "mailto:contato@editordemo.com",
+  },
+  showreel: {
+    title: "Showreel 2024",
+    videoUrl: "https://player.vimeo.com/video/123456789",
+    thumbnail: "/showreel-thumb.svg",
+  },
+};
