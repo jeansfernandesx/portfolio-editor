@@ -92,7 +92,7 @@ export function Contact() {
         <div className="absolute left-0 right-0 top-1/2 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
       </div>
 
-      <Container className="relative">
+      <Container size="xl" className="relative">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-16">
 
           {/* Left Column - Direct Contact Cards */}

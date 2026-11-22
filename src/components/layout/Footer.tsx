@@ -48,7 +48,7 @@ export function Footer() {
       <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/5 to-transparent pointer-events-none" style={{ transform: "translateX(-50%)" }} aria-hidden="true" />
 
-      <Container>
+      <Container size="xl">
         <div className="py-16 lg:py-24 relative z-10">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 mb-16">
             {/* Brand Column */}

@@ -313,7 +313,7 @@ export function Portfolio() {
       <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" aria-hidden="true" />
       <div className="absolute left-0 right-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" aria-hidden="true" />
 
-      <Container className="relative">
+      <Container size="xl" className="relative">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}

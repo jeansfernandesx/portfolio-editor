@@ -47,7 +47,7 @@ export function Hero() {
         <div className="absolute left-0 right-0 top-2/3 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
       </div>
 
-      <Container className="relative z-10 pb-20 pt-32 w-full">
+      <Container size="xl" className="relative z-10 pb-20 pt-32 w-full">
         <div className="grid lg:grid-cols-12 gap-8 items-end">
           {/* Left Column - Editorial Info */}
           <motion.div

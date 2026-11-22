@@ -29,7 +29,7 @@ export function About() {
       {/* Vertical accent line */}
       <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent pointer-events-none" style={{ transform: "translateX(-50%)" }} aria-hidden="true" />
 
-      <Container className="relative">
+      <Container size="xl" className="relative">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-start">
 
           {/* Left Column - Image + Quote Card */}
