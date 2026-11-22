@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Play, X, ExternalLink, Loader2 } from "lucide-react";
+import { Play, X, ExternalLink, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -14,63 +14,130 @@ interface ProjectCardProps {
   project: (typeof projects)[0];
   index: number;
   onOpen: (project: typeof projects[0]) => void;
+  layout?: "featured" | "default" | "horizontal";
 }
 
-function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
+function ProjectCard({ project, index, onOpen, layout = "default" }: ProjectCardProps) {
   const [loaded, setLoaded] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  const aspectRatios = {
+    featured: "aspect-[16/9]",
+    default: "aspect-[4/3]",
+    horizontal: "aspect-[21/9]",
+  };
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="group relative cursor-pointer"
+      transition={{ duration: 0.6, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className={cn(
+        "group relative cursor-pointer",
+        layout === "featured" && "lg:col-span-2 lg:row-span-2",
+        layout === "horizontal" && "lg:col-span-3"
+      )}
       onKeyDown={(e) => e.key === "Enter" && onOpen(project)}
       onClick={() => onOpen(project)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       tabIndex={0}
       role="button"
       aria-label={`Ver projeto: ${project.title}`}
     >
-      <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-900">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true" />
+      <div className={cn("relative overflow-hidden rounded-2xl bg-gray-900", aspectRatios[layout])}>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" aria-hidden="true" />
+
         {!loaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
-            <Loader2 className="h-8 w-8 text-white/50 animate-spin" aria-hidden="true" />
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
+            <Loader2 className="h-8 w-8 text-white/30 animate-spin" aria-hidden="true" />
           </div>
         )}
+
         <Image
           src={project.thumbnail}
           alt={`Thumbnail do projeto: ${project.title}`}
           fill
           className={cn(
-            "object-cover transition-all duration-700 ease-out group-hover:scale-105",
+            "object-cover transition-all duration-1000 ease-out",
+            "group-hover:scale-105",
             loaded ? "opacity-100" : "opacity-0"
           )}
           onLoad={() => setLoaded(true)}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes={layout === "featured"
+            ? "(max-width: 1024px) 100vw, 66vw"
+            : layout === "horizontal"
+              ? "(max-width: 1024px) 100vw, 75vw"
+              : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
           placeholder="blur"
           blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
         />
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
+        {/* Overlay with Play Button */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-white/10 backdrop-blur-sm rounded-full p-3 text-white"
+            className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white"
             aria-hidden="true"
           >
-            <Play className="h-6 w-6 ml-1" />
+            <Play className="h-7 w-7 ml-1" />
           </motion.div>
         </div>
-        {project.featured && (
-          <span className="absolute top-3 left-3 bg-white/10 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full">
-            Destaque
+
+        {/* Category Badge */}
+        <div className="absolute top-4 left-4 z-10">
+          <span className={cn(
+            "px-3 py-1.5 rounded-full text-xs font-medium uppercase tracking-wider backdrop-blur-sm border transition-all",
+            project.featured
+              ? "bg-amber-500/20 text-amber-300 border-amber-500/30"
+              : "bg-white/10 text-white/70 border-white/20"
+          )}>
+            {project.category}
           </span>
+        </div>
+
+        {/* Featured Badge */}
+        {project.featured && (
+          <motion.div
+            initial={{ rotate: -5, scale: 0 }}
+            animate={{ rotate: -5, scale: 1 }}
+            transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 15 }}
+            className="absolute top-4 right-4 z-10"
+          >
+            <span className="px-3 py-1.5 rounded-full text-xs font-medium uppercase tracking-wider bg-white/10 text-white/70 border border-white/20 backdrop-blur-sm">
+              Destaque
+            </span>
+          </motion.div>
         )}
+
+        {/* Duration */}
+        <div className="absolute bottom-4 right-4 z-10 text-white/70 text-xs font-medium px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-full border border-white/10">
+          {project.duration}
+        </div>
       </div>
-      <div className="mt-4 text-left">
-        <p className="text-gray-500 text-sm uppercase tracking-wide mb-1">{project.category}</p>
-        <h3 className="font-semibold text-white group-hover:text-white/80 transition-colors">{project.title}</h3>
-        <p className="text-gray-400 text-sm mt-1 line-clamp-2">{project.description}</p>
+
+      {/* Content */}
+      <div className="mt-5 group-hover:pr-4 transition-pr duration-300">
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 + index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="space-y-2"
+        >
+          <p className="text-white/40 text-xs uppercase tracking-widest font-medium">{project.category}</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-white/80 transition-colors leading-tight pr-8">
+            {project.title}
+          </h3>
+          <p className="text-gray-400 text-sm leading-relaxed line-clamp-2 max-w-xs sm:max-w-md">
+            {project.description}
+          </p>
+          <div className="flex items-center gap-2 mt-3 text-white/30 text-xs">
+            <span>{project.client}</span>
+            <span aria-hidden="true">·</span>
+            <span>{new Date(project.date).getFullYear()}</span>
+          </div>
+        </motion.div>
       </div>
     </motion.article>
   );
@@ -97,9 +164,10 @@ function ProjectModal({ project, onClose }: { project: (typeof projects)[0]; onC
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-5xl max-h-[90vh] flex flex-col bg-gray-950 rounded-xl overflow-hidden border border-white/10"
+          className="relative w-full max-w-6xl max-h-[90vh] flex flex-col bg-gray-950 rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.05),_0_25px_50px_-12px_rgba(0,0,0,0.8)]"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Video Player */}
           <div className="relative aspect-video bg-black">
             {platform === "youtube" || platform === "vimeo" ? (
               <iframe
@@ -119,65 +187,71 @@ function ProjectModal({ project, onClose }: { project: (typeof projects)[0]; onC
                 playsInline
               />
             )}
+
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 text-gray-400 hover:text-white transition-all"
+              aria-label="Fechar modal"
+            >
+              <X className="h-6 w-6" />
+            </button>
           </div>
 
+          {/* Content */}
           <div className="p-6 lg:p-8 overflow-y-auto flex-1">
-            <div className="flex items-start justify-between gap-4 mb-4">
-              <div>
-                <p className="text-gray-500 text-sm uppercase tracking-wide mb-1">{project.category}</p>
-                <h2 id="modal-title" className="text-2xl lg:text-3xl font-bold text-white mb-2">
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <div className="flex-1">
+                <p className="text-white/40 text-xs uppercase tracking-widest font-medium mb-2">{project.category}</p>
+                <h2 id="modal-title" className="text-3xl sm:text-4xl font-black text-white mb-3 leading-tight">
                   {project.title}
                 </h2>
-                <p className="text-gray-300 text-base leading-relaxed">{project.description}</p>
+                <p className="text-gray-300 text-base leading-relaxed max-w-2xl">{project.description}</p>
               </div>
-              <button
-                onClick={onClose}
-                className="flex-shrink-0 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-400 hover:text-white"
-                aria-label="Fechar modal"
-              >
-                <X className="h-6 w-6" />
-              </button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
+            {/* Meta Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 pb-6 border-b border-white/10">
               <div>
-                <p className="text-gray-500 mb-1">Cliente</p>
+                <p className="text-white/40 text-xs uppercase tracking-wider mb-1">Cliente</p>
                 <p className="text-white font-medium">{project.client}</p>
               </div>
               <div>
-                <p className="text-gray-500 mb-1">Papel</p>
+                <p className="text-white/40 text-xs uppercase tracking-wider mb-1">Papel</p>
                 <p className="text-white font-medium">{project.role}</p>
               </div>
               <div>
-                <p className="text-gray-500 mb-1">Duração</p>
+                <p className="text-white/40 text-xs uppercase tracking-wider mb-1">Duração</p>
                 <p className="text-white font-medium">{project.duration}</p>
               </div>
               <div>
-                <p className="text-gray-500 mb-1">Data</p>
-                <p className="text-white font-medium">{new Date(project.date).toLocaleDateString("pt-BR")}</p>
+                <p className="text-white/40 text-xs uppercase tracking-wider mb-1">Entrega</p>
+                <p className="text-white font-medium">{new Date(project.date).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" })}</p>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2 mb-6">
+            {/* Tools */}
+            <div className="flex flex-wrap gap-2 mb-8">
               {project.tools.map((tool) => (
                 <span
                   key={tool}
-                  className="px-3 py-1 bg-white/5 text-white/70 text-xs rounded-full border border-white/10"
+                  className="px-4 py-1.5 bg-white/5 text-white/70 text-sm rounded-full border border-white/10 hover:border-white/20 hover:bg-white/10 transition-colors"
                 >
                   {tool}
                 </span>
               ))}
             </div>
 
-            <div className="flex items-center gap-4">
-              <Button variant="outline" onClick={onClose}>
+            {/* Actions */}
+            <div className="flex items-center gap-4 pt-4 border-t border-white/10">
+              <Button variant="outline" onClick={onClose} className="flex-1 sm:flex-none">
                 Fechar
               </Button>
               <a
                 href={project.videoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm"
+                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm font-medium px-4 py-2"
               >
                 Ver original
                 <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -193,11 +267,35 @@ function ProjectModal({ project, onClose }: { project: (typeof projects)[0]; onC
 export function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<Category>("Todos");
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "masonry">("grid");
 
   const filteredProjects = useMemo(() => {
     if (activeCategory === "Todos") return projects;
     return projects.filter((p) => p.category === activeCategory);
   }, [activeCategory]);
+
+  // Layout logic: first project featured, rest in grid
+  const layoutProjects = useMemo(() => {
+    if (filteredProjects.length === 0) return [];
+
+    const featured = filteredProjects.find(p => p.featured);
+    const others = filteredProjects.filter(p => !p.featured);
+
+    if (featured) {
+      return [
+        { ...featured, _layout: "featured" as const },
+        ...others.map((p, i) => ({
+          ...p,
+          _layout: i % 3 === 2 ? "horizontal" as const : "default" as const
+        }))
+      ];
+    }
+
+    return others.map((p, i) => ({
+      ...p,
+      _layout: i % 3 === 2 ? "horizontal" as const : "default" as const
+    }));
+  }, [filteredProjects]);
 
   const handleOpenModal = (project: typeof projects[0]) => {
     setSelectedProject(project);
@@ -210,56 +308,105 @@ export function Portfolio() {
   };
 
   return (
-    <section id="portfolio" className="py-20 lg:py-32 bg-black" aria-labelledby="portfolio-title">
-      <Container>
+    <section id="portfolio" className="py-24 lg:py-32 bg-black" aria-labelledby="portfolio-title">
+      {/* Decorative Lines */}
+      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" aria-hidden="true" />
+      <div className="absolute left-0 right-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" aria-hidden="true" />
+
+      <Container className="relative">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="text-center mb-12 lg:mb-16"
+          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mb-16 lg:mb-20"
         >
-          <p className="text-white/60 text-sm tracking-widest uppercase font-medium mb-3">Projetos Selecionados</p>
-          <h2 id="portfolio-title" className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
-            Portfólio
-          </h2>
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+            <div>
+              <p className="text-white/40 text-sm tracking-widest uppercase font-medium mb-3">Projetos Selecionados</p>
+              <h2 id="portfolio-title" className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-[0.95]">
+                Portfólio
+              </h2>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-white/30 text-sm hidden sm:block">Filtrar por:</span>
+              <div className="flex gap-2" role="tablist" aria-label="Filtrar por categoria">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    role="tab"
+                    aria-selected={activeCategory === category}
+                    aria-controls="portfolio-grid"
+                    onClick={() => setActiveCategory(category)}
+                    className={cn(
+                      "px-4 py-2 rounded-full text-sm font-medium transition-all duration-300",
+                      activeCategory === category
+                        ? "bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                        : "bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 border border-white/10"
+                    )}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* View Toggle */}
+          <div className="flex items-center gap-2 bg-gray-900/50 border border-white/10 rounded-full p-1 w-fit">
+            <button
+              onClick={() => setViewMode("grid")}
+              className={cn(
+                "p-2 rounded-full transition-all",
+                viewMode === "grid" ? "bg-white text-black" : "text-gray-400 hover:text-white"
+              )}
+              aria-label="Visualização em grade"
+              aria-pressed={viewMode === "grid"}
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+            </button>
+            <button
+              onClick={() => setViewMode("masonry")}
+              className={cn(
+                "p-2 rounded-full transition-all",
+                viewMode === "masonry" ? "bg-white text-black" : "text-gray-400 hover:text-white"
+              )}
+              aria-label="Visualização masonry"
+              aria-pressed={viewMode === "masonry"}
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4a2 2 0 012-2h12a2 2 0 012 2v4M4 16v4a2 2 0 002 2h12a2 2 0 002-2v-4M4 12v-4a2 2 0 012-2h4" /></svg>
+            </button>
+          </div>
         </motion.div>
 
-        <div className="flex flex-wrap justify-center gap-2 mb-12" role="tablist" aria-label="Filtrar por categoria">
-          {categories.map((category) => (
-            <button
-              key={category}
-              role="tab"
-              aria-selected={activeCategory === category}
-              aria-controls="portfolio-panel"
-              onClick={() => setActiveCategory(category)}
-              className={cn(
-                "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
-                activeCategory === category
-                  ? "bg-white text-black shadow-lg shadow-white/10"
-                  : "bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-800 border border-white/10"
-              )}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
+        {/* Projects Grid */}
         <motion.div
-          id="portfolio-panel"
+          id="portfolio-grid"
           role="tabpanel"
           aria-label={`${activeCategory} projetos`}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8"
+          style={{ gridAutoRows: "minmax(300px, auto)" }}
         >
-          {filteredProjects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} onOpen={handleOpenModal} />
+          {layoutProjects.map(({ _layout, ...project }, index) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
+              onOpen={handleOpenModal}
+              layout={_layout}
+            />
           ))}
         </motion.div>
 
         {filteredProjects.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            Nenhum projeto encontrado nesta categoria.
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-24"
+          >
+            <p className="text-gray-500 text-lg">Nenhum projeto encontrado nesta categoria.</p>
+          </motion.div>
         )}
       </Container>
 
